@@ -1,0 +1,512 @@
+<style lang="less">
+.btn-left {
+  position: absolute;
+  top: 984rpx;
+  left: 112rpx;
+  display: block;
+  width: 138rpx;
+  height: 86rpx;
+}
+.btn-right {
+  position: absolute;
+  top: 984rpx;
+  right: 112rpx;
+  display: block;
+  width: 138rpx;
+  height: 86rpx;
+}
+swiper {
+  position: fixed;
+  width: 100%;
+  height: 880rpx;
+  swiper-item {
+    padding-left: 30rpx;
+    padding-top: 114rpx;
+  }
+  .slide-image {
+    position: relative;
+    float: left;
+    display: block;
+    margin-right: 15rpx;
+    margin-bottom: 40rpx;
+    width: 220rpx;
+    height: 326rpx;
+    border-radius: 10rpx;
+    overflow: hidden;
+    image {
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+.section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    .btn-play {
+      display: block;
+      text-align: center;
+      color: #fff;
+      text-shadow: 0 0 10rpx #000;
+      font-size: 32rpx;
+      opacity: 0;
+      &.active {
+        opacity: 1;
+      }
+    }
+  }
+  .video-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0);
+  }
+}
+.no-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+.red-dot {
+  position: absolute;
+  top: 2rpx;
+  right: 2rpx;
+  display: block;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 100%;
+  overflow: hidden;
+  background: #ff0000;
+}
+.card-detail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+
+  .maskbg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+  .mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .cont {
+    position: absolute;
+    left: 75rpx;
+    top: 55rpx;
+    display: block;
+    width: 608rpx;
+    height: 993rpx;
+    .kuang {
+      position: absolute;
+      left: 0;
+      top: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    .pic-warp {
+      position: relative;
+      display: block;
+      margin: 52rpx auto;
+      width: 520rpx;
+      height: 771rpx;
+      border-radius: 10rpx;
+      overflow: hidden;
+      image {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+      .no-active {
+        //border-radius: 10rpx;
+      }
+    }
+    .desc {
+      position: absolute;
+      bottom: 74rpx;
+      right: 30rpx;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      .icon-card {
+        display: block;
+        width: 36rpx;
+        height: 40rpx;
+        font-size: 36rpx;
+        color: #e6e6e6;
+      }
+      text {
+        display: block;
+        font-size: 30rpx;
+        color: #ffffff;
+        letter-spacing: 0;
+        &.icon-card {
+          font-size: 36rpx;
+        }
+        &.card-num {
+          padding-left: 10rpx;
+          color: #fff;
+        }
+      }
+    }
+    .name {
+      position: absolute;
+      left: 20rpx;
+      bottom: 66rpx;
+      font-size: 42rpx;
+      color: #ffffff;
+      letter-spacing: 0;
+    }
+    .rank {
+      position: absolute;
+      left: 20rpx;
+      bottom: 20rpx;
+      font-size: 28rpx;
+      color: #ffffff;
+      letter-spacing: 0;
+    }
+  }
+  .btn-play {
+    position: absolute;
+    bottom: 20rpx;
+    left: 306rpx;
+    display: block;
+    width: 137rpx;
+    height: 130rpx;
+  }
+}
+</style>
+<template>
+  <view class="page">
+    <image wx:if="{{imgBg}}" class="bg" src="{{imghost + imgBg}}" mode="aspectFill" bindload="bgLoadEnd"></image>
+    
+    <image class="btn-left {{swiperPages.length > 1 ? '':'hide'}}" @tap="clickLeft" src="{{swiperIndex == 0 ? '../images/btn-left-nor.png' : '../images/btn-left-sel.png'}}"></image>
+    <image class="btn-right {{swiperPages.length > 1 ? '':'hide'}}" @tap="clickRight" src="{{swiperIndex == swiperPages.length - 1 ? '../images/btn-right-nor.png' : '../images/btn-right-sel.png'}}"></image>
+  </view>
+  <swiper indicator-dots="{{swiperPages.length > 1 ? true:false}}" indicator-color="rgba(255,255,255,.5)" current="{{swiperIndex}}" indicator-active-color="#ffffff" bindchange="swiperChange" bindanimationfinish="swiperAniEnd">
+    <block wx:for="{{swiperPages}}" wx:for-index="pIndex" wx:for-item="page" wx:key="{{pIndex}}">
+      <swiper-item>
+        <view class="slide-image" wx:for="{{page}}" wx:for-index="idx" wx:for-item="card" wx:key="{{idx}}" @tap="clickCard({{pIndex}},{{idx}})">
+          <image wx:if="{{card._active}}" src="{{card.rarity.text == 'HSR' && card.is_have == 0 ? '../images/hidecard.png':card.img_small}}" lazy-load/>
+          <view wx:if="{{card.is_have == 0 && card.rarity.text != 'HSR'}}" class="no-active"></view>
+          <view class="red-dot" wx:if="{{card.is_view == 0 && card.is_have == 1}}"></view>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+  <view class="card-detail" catchtouchmove="catchtouchmove" wx:if="{{showCard}}">
+    <view class="maskbg" @tap="closeCard"></view>
+    <image class="mask" wx:if="{{prevCard._mask}}" src="{{prevCard.img_video}}" lazy-load @tap="closeCard"></image>
+    <view class="cont" @tap="clickPlay">
+      <image class="kuang" src="{{imghost}}/static_xcx/assets/card-{{prevCard.rarity.text}}.png" lazy-load></image>
+      <view class="pic-warp">
+        <image class="pic {{showFilter ? 'cardFilter' : ''}}" src="{{prevCard._pic}}" bindload="cardLoadend"></image>
+        <view wx:if="{{!prevCard._activation}}" class="no-active"></view>
+      </view>
+      <view class="desc" wx:if="{{prevCard._showCardNum && prevCard.code_num>0}}">
+        <text class="iconfont icon-qiapai icon-card"></text>
+        <text class="card-num">{{prevCard.code_num}}</text>
+      </view>
+      <view class="name">{{prevCard._showCardNum ? prevCard.name:'神秘卡牌'}}</view>
+      <view class="rank">{{prevCard.is_have ? '第'+prevCard.rank+'个拥有此卡': prevCard._showCardNum ?'您未收集此卡':'收集齐其他卡牌后自动激活！'}}</view>
+    </view>
+    <image class="btn-play" wx:if="{{prevCard._mask && prevCard._activation}}" src="../images/btn-play.png" @tap="clickPlay"></image>
+  </view>
+  <view class="section" wx:if="{{showvideo}}">
+    <video src="{{prevCard.video}}" objectFit="cover" enable-progress-gesture="{{videoBtn}}" direction="-90" autoplay show-center-play-btn="{{videoBtn}}" show-play-btn="{{videoBtn}}" show-fullscreen-btn="{{videoBtn}}" controls="{{videoBtn}}" bindended="videoEnd" binderror="videoError">
+      <cover-view class="video-mask"  @tap="clickQuit" catchtouchmove="catchtouchmove">
+          <cover-view class="btn-play ani {{quitTimer ?'active':''}}">
+            快速双击退出视频
+          </cover-view>
+      </cover-view>
+    </video>
+  </view>
+  <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import mixinEvent from '../mixins/MixinEvent';
+import auth from '../mixins/Auth';
+import Tips from '../util/Tips';
+import cm from '../util/CardManage';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: ''
+  };
+  mixins = [https, auth, mixinEvent];
+  data = {
+    inited: false,
+    imghost: cf.imghost,
+    isSwiperAniEnd: true,
+    swiperIndex: -1,
+    swiperPages: [],
+    videoBtn: false,
+    showvideo: false,
+    showCard: false,
+    showFilter: false,
+    bookId: '',
+    cardId: '',
+    imgBg: '',
+    book: {
+      id: '',
+      name: '',
+      prize_id: '',
+      img_cover: '',
+      img_background: '',
+      img_border: '',
+      audio: '',
+      created_at: '',
+      updated_at: '',
+      card_num: 0,
+      is_card_flag: 0,
+      user_card_num: 0,
+      is_reward: 0
+    },
+    prevCard: {
+      id: '',
+      book_id: '',
+      name: '',
+      rarity: {
+        origin: '',
+        text: ''
+      },
+      img_big: '',
+      img_small: '',
+      video: '',
+      img_video: '',
+      created_at: '',
+      updated_at: '',
+      code_num: '',
+      rank: 0,
+      auto_card_id: '',
+      is_view: 0,
+      is_have: 0,
+      _mask: false,
+      _activation: false
+    },
+    quitTime: 0,
+    quitTimer: null
+  };
+components = {
+        AuthAlert: AuthAlert
+    };
+  methods = {
+    clickLeft() {
+      if (this.swiperIndex > 0 && this.isSwiperAniEnd) {
+        this.isSwiperAniEnd = false;
+        this.swiperIndex--;
+      }
+    },
+    clickRight() {
+      if (
+        this.swiperIndex < this.swiperPages.length - 1 &&
+        this.isSwiperAniEnd
+      ) {
+        this.isSwiperAniEnd = false;
+        this.swiperIndex++;
+      }
+    },
+    swiperAniEnd(e) {
+      this.isSwiperAniEnd = true;
+    },
+    swiperChange(e) {
+      this.swiperIndex = e.detail.current;
+      for (let m = 0; m < this.swiperPages.length; m++) {
+        for (let n = 0; n < this.swiperPages[m].length; n++) {
+          if (m <= this.swiperIndex + 1 && !this.swiperPages[m][n]._active) {
+            this.swiperPages[m][n]._active = true;
+          }
+        }
+      }
+    },
+    closeCard() {
+      this.showCard = false;
+    },
+    clickCard(_pIndex, _cardIndex) {
+      this.selPrevCard(this.swiperPages[_pIndex][_cardIndex], false);
+    },
+    clickPlay() {
+      if (this.prevCard._activation && this.prevCard._mask) {
+        this.showvideo = true;
+      }
+    },
+    videoEnd() {
+      this.showvideo = false;
+      this.$parent.bgSoundPlay();
+    },
+    videoError() {
+      Tips.toast('视频无法播放', res => {
+        this.showvideo = false;
+        this.$parent.bgSoundPlay();
+        this.$apply();
+      });
+    },
+    cardLoadend() {
+      this.showFilter = this.prevCard._filter;
+    },
+    clickQuit() {
+      cf.log(this.quitTimer);
+      let _t = new Date().getTime();
+      cf.log(_t - this.quitTime);
+      if (this.quitTimer) {
+        if (_t - this.quitTime <= 1500) {
+          clearTimeout(this.quitTimer);
+          this.quitTimer = null;
+          this.showvideo = false;
+          this.$parent.bgSoundPlay();
+        } else {
+          this.quitTime = _t;
+        }
+      } else {
+        this.quitTime = _t;
+        this.quitTimer = setTimeout(() => {
+          clearTimeout(this.quitTimer);
+          this.quitTimer = null;
+          this.$apply();
+        }, 1500);
+      }
+    },
+    bgLoadEnd() {
+      this.inited = true;
+    },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+  selPrevCard(_prevCard, _formActive) {
+    this.prevCard = _prevCard;
+    this.prevCard._mask = cm.showMask(this.prevCard);
+    this.prevCard._filter = cm.showFilter(this.prevCard);
+    this.prevCard._pic =
+      cm.isHideCard(this.prevCard) && !this.prevCard.is_have
+        ? '../images/hidecard.png'
+        : this.prevCard.img_big;
+    this.prevCard._showCardNum = cm.isHideCard(this.prevCard)
+      ? this.prevCard.is_have
+      : true;
+    this.prevCard._activation = cm.isHideCard(this.prevCard)
+      ? true
+      : this.prevCard.is_have;
+    this.prevCard.is_view = 1;
+    cf.log(this.prevCard);
+    this.showCard = true;
+    if (!_formActive) {
+      this.wxRequest(
+        'card/detail',
+        res => {
+          if (res.code == 0) {
+          } else {
+          }
+        },
+        { id: this.prevCard.id },
+        1
+      );
+    }
+  }
+  onLoad(_opt) {
+    this.swiperIndex = 0;
+    this.bookId = _opt.bookId || '';
+    this.cardId = _opt.cardId || '';
+  }
+  onHide() {
+    this.showvideo = false;
+  }
+  onShow() {
+    if (this.cardId) {
+      this.wxRequest(
+        'card/detail',
+        res => {
+          if (res.code == 0) {
+            let _entity = res.data.entity;
+            _entity.img_small = this.imghost + _entity.img_small;
+            _entity.img_big = this.imghost + _entity.img_big;
+            _entity.img_video = this.imghost + _entity.img_video;
+            this.selPrevCard(_entity, true);
+            this.$apply();
+          }
+        },
+        { id: this.cardId },
+        1
+      );
+    }
+
+    this.getList(200);
+  }
+  getList(_init) {
+    this.wxRequests(
+      _init,
+      '/cardbook/detail',
+      res => {
+        if (res.code == 0) {
+          this.book = res.data.entity.book;
+          wx.setNavigationBarTitle({
+            title: this.book.name
+          });
+          this.imgBg = this.book.img_background;
+
+          this.swiperPages = [];
+          let _total = res.data.entity.cards.entities.length;
+          let _entities = res.data.entity.cards.entities;
+          for (let m = 0; m < Math.ceil(_total / 6); m++) {
+            this.swiperPages[m] = [];
+            let _len = m * 6 + 6 >= _total ? _total : m * 6 + 6;
+            for (let n = m * 6; n < _len; n++) {
+              let _entity = _entities[n];
+              _entity._active = m <= this.swiperIndex + 1 ? true : false;
+              _entity.img_small = this.imghost + _entity.img_small;
+              _entity.img_big = this.imghost + _entity.img_big;
+              _entity.img_video = this.imghost + _entity.img_video;
+              this.swiperPages[m].push(_entity);
+            }
+          }
+          this.$apply();
+        } else {
+          Tips.toast(res.msg);
+        }
+      },
+      {
+        id: this.bookId
+      },
+      1,
+      1
+    );
+  }
+}
+</script>

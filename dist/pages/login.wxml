@@ -1,0 +1,6 @@
+
+  <view class="page">
+    <view class="msg">
+        <text bindtap="clickLogin">{{islogin ? '正在登录中,请耐心等待!':'点击我登录'}}</text>
+    </view>
+  </view>

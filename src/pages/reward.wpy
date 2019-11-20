@@ -1,0 +1,67 @@
+<style lang="less">
+.btn-lqjl {
+  position: absolute;
+  left: 195rpx;
+  bottom: 100rpx;
+  display: block;
+  width: 360rpx;
+  height: 98rpx;
+}
+</style>
+<template>
+  <view class="page">
+    <image class="bg" src="../images/bg-jl.jpg" mode="aspectFill"></image>
+    <image class="btn-lqjl" src="../images/btn-lqjl.png" @tap="clickLqjl"></image>
+  </view> 
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import ut from '../util/Util';
+import Tips from '../util/Tips';
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: '领取奖励'
+  };
+  mixins = [https, auth];
+  data = {
+    bookId:'',
+    prizeId: ''
+  };
+
+  methods = {
+    clickLqjl() {
+      if (this.bookId && this.prizeId) {
+        ut.goPage('confirmaddress', {bookId:this.bookId, prizeId: this.prizeId });
+      } else {
+        Tips.toast('奖励不存在');
+      }
+    }
+  };
+  onLoad(_opt) {
+    this.bookId = _opt.bookId || '';
+    this.prizeId = _opt.prizeId || '';
+  }
+  onReady() {}
+  onShow() {
+    /*this.wxRequest(
+      'card/detail',
+      res => {
+        if (res.code == 0) {
+          ut.setStorageSync('confirmaddress', res.data.entity);
+          this.showBtn = true;
+          this.$apply();
+        } else {
+          Tips.toast(res.msg);
+        }
+      },
+      { id: this.prizeId },
+      1
+    );*/
+  }
+}
+</script>

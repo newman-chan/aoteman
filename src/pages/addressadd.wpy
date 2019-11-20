@@ -1,0 +1,274 @@
+<style lang="less">
+.btn-confirm {
+  position: absolute;
+  left: 215rpx;
+  bottom: 130rpx;
+  display: block;
+  width: 320rpx;
+  height: 98rpx;
+}
+.tip {
+  display: block;
+  padding-top: 40rpx;
+  padding-left: 40rpx;
+  font-size: 24rpx;
+  color: #adc1ff;
+}
+.c-group {
+  padding-top: 40rpx;
+  .c-item {
+    position: relative;
+    display: -webkit-box;
+    width: 100%;
+    height: 100rpx;
+    line-height: 100rpx;
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+    color: #ffffff;
+    font-size: 30rpx;
+    border-top: 1px solid rgba(255, 255, 255, 0.5);
+    background-color: rgba(0, 0, 0, 0.5);
+    .icon-arrow{
+      z-index: 10;
+      width: 600rpx;
+    }
+    input {
+      -webkit-box-flex: 1;
+      display: block;
+      width: 100%;
+      height: 100rpx;
+    }
+  }
+}
+</style>
+<template>
+  <view class="page">
+    <image class="bg" src="../images/bg2.jpg" mode="aspectFill"></image>
+    <scroll-view scroll-y scroll-with-animation="true">
+      <text class="tip">*温馨提示：为了确保您可以顺利收到快递，请填写完整信息。</text>
+      <view class="c-group">
+        <view class="c-item">
+          <text>收货人：</text>
+          <input type="text" placeholder="输入收货人" bindinput="bindinput('name')" value="{{entity.name}}" maxlength="10" disabled="{{isEdit == 0}}"/>
+        </view>
+        <view class="c-item">
+          <text>联系方式：</text>
+          <input type="number" placeholder="输入联系方式：" bindinput="bindinput('mobile')" value="{{entity.mobile}}" maxlength="11" disabled="{{isEdit == 0}}"/>
+        </view>
+        <view class="c-item">
+          <picker wx:if="{{isEdit != 0}}" class="icon-arrow" mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range-key="name" range="{{multiArray}}">
+            <text class="iconfont icon-youjiantou"></text>
+          </picker>
+          <text>所在地区：</text>
+          <input type="text" placeholder="选择地区：" value="{{entity.province_name + entity.city_name + entity.area_name}}" disabled/>
+        </view>
+        <view class="c-item">
+          <text>详细地址：</text>
+          <input class="dz" type="text" placeholder="输入详细地址" bindinput="bindinput('address')" value="{{entity.address}}" disabled="{{isEdit == 0}}"/>
+        </view>
+      </view>
+    </scroll-view>
+    <image class="btn-confirm" src="../images/btn-ok.png" @tap="clickConfirm" wx:if="{{isEdit != 0}}"></image>
+  </view>
+  <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import ut from '../util/Util';
+import Tips from '../util/Tips';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+  config = {
+    navigationBarTitleText: ''
+  };
+  mixins = [https, auth];
+  data = {
+    isEdit: 0,
+    multiTxt: '',
+    multiArray: [[], [], []],
+    multiIndex: [0, 0, 0],
+    entity: {
+      id: '',
+      user_id: '',
+      is_default: 0,
+      name: '',
+      mobile: '',
+      province_id: '',
+      city_id: '',
+      area_id: '',
+      address: '',
+      created_at: '',
+      updated_at: '',
+      province_name: '',
+      city_name: '',
+      area_name: ''
+    }
+  };
+    components = {
+        AuthAlert: AuthAlert
+    };
+  methods = {
+    bindinput(_field, _event) {
+      this.entity[_field] = _event.detail.value;
+    },
+    clickConfirm() {
+      let self = this;
+      cf.log(self.entity);
+      if (!ut.strTrim(self.entity.name)) {
+        Tips.toast('收货人不能为空');
+      } else if (!ut.checkMobile(self.entity.mobile)) {
+        Tips.toast('联系方式格式不对');
+      } else if (!ut.strTrim(self.entity.province_name)) {
+        Tips.toast('地区不能为空');
+      } else if (!ut.strTrim(self.entity.address)) {
+        Tips.toast('地址不能为空');
+      } else {
+        self.wxRequests(
+          1,
+          self.isEdit == 1 ? '/address/add' : 'address/edit',
+          res => {
+            cf.log(res);
+            if (res.code == 0) {
+              Tips.toast(self.isEdit == 1 ? '添加成功' : '编辑成功',function(){
+                ut.setStorageSync('addressadd', self.entity);
+                ut.goPageBack(-1);
+              });
+            }
+            else{
+              Tips.toast(res.msg);
+            }
+          },
+          self.entity,
+          1
+        );
+      }
+    },
+    bindMultiPickerChange: function(e) {
+      let _multiIndexAr = e.detail.value;
+      let _provinceAr = this.multiArray[0];
+      let _cityAr = this.multiArray[1];
+      let _areaAr = this.multiArray[2];
+
+      this.entity.province_id = _provinceAr.length
+        ? _provinceAr[_multiIndexAr[0]].id
+        : '';
+      this.entity.province_name = _provinceAr.length
+        ? _provinceAr[_multiIndexAr[0]].name
+        : '';
+      this.entity.city_id = _cityAr.length ? _cityAr[_multiIndexAr[1]].id : '';
+      this.entity.city_name = _cityAr.length
+        ? _cityAr[_multiIndexAr[1]].name
+        : '';
+      this.entity.area_id = _areaAr.length ? _areaAr[_multiIndexAr[2]].id : '';
+      this.entity.area_name = _areaAr.length
+        ? _areaAr[_multiIndexAr[2]].name
+        : '';
+    },
+    bindMultiPickerColumnChange: function(e) {
+      this.multiIndex[e.detail.column] = e.detail.value;
+      switch (e.detail.column) {
+        case 0:
+          //省
+          this.getCity(this.multiArray[e.detail.column][e.detail.value].id);
+          break;
+        case 1:
+          //市
+          this.getArea(this.multiArray[e.detail.column][e.detail.value].id);
+          break;
+        case 2:
+          //区
+          break;
+      }
+    },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+  getProvince() {
+    this.wxRequest(
+      'region/getList',
+      res => {
+        if (res.code == 0) {
+          this.multiArray[0] = res.data;
+          this.multiIndex[0] = 0;
+          this.multiArray[1] = [];
+          this.multiIndex[1] = 0;
+          this.multiArray[2] = [];
+          this.multiIndex[2] = 0;
+          if (res.data.length > 0) {
+            this.getCity(this.multiArray[0][0].id);
+          } else {
+            this.$apply();
+          }
+        }
+      },
+      { parent_id: 0 },
+      1
+    );
+  }
+  getCity(_id) {
+    this.wxRequest(
+      'region/getList',
+      res => {
+        if (res.code == 0) {
+          this.multiArray[1] = res.data;
+          this.multiIndex[1] = 0;
+          this.multiArray[2] = [];
+          this.multiIndex[2] = 0;
+          if (res.data.length > 0) {
+            this.getArea(this.multiArray[1][0].id);
+          } else {
+            this.$apply();
+          }
+        }
+      },
+      { parent_id: _id },
+      1
+    );
+  }
+  getArea(_id) {
+    this.wxRequest(
+      'region/getList',
+      res => {
+        if (res.code == 0) {
+          this.multiArray[2] = res.data;
+          this.multiIndex[2] = 0;
+          this.$apply();
+        }
+      },
+      { parent_id: _id },
+      1
+    );
+  }
+  onLoad(_opt) {
+    this.isEdit = _opt.isEdit;
+    cf.log('isEdit' + this.isEdit);
+    wx.setNavigationBarTitle({
+      title:
+        this.isEdit == 1
+          ? '新增地址'
+          : this.isEdit == 2 ? '编辑地址' : '地址详情'
+    });
+    let _entity = ut.getStorageSync('addressadd');
+    cf.log('地址');
+    cf.log(_entity);
+    if (_entity) {
+      this.entity = _entity;
+    }
+  }
+  onShow() {
+    if (this.isEdit) {
+      this.getProvince();
+    }
+  }
+}
+</script>

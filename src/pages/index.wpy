@@ -1,0 +1,294 @@
+<style lang="less">
+.logo {
+    position: absolute;
+    top: 26rpx;
+    left: 33rpx;
+    display: block;
+    width: 373rpx;
+    height: 68rpx;
+}
+.user {
+    position: absolute;
+    top: 30rpx;
+    right: 30rpx;
+    display: block;
+    width: 52rpx;
+    height: 56rpx;
+    font-size: 52rpx;
+    color: #e6e6e6;
+}
+.msg {
+    position: absolute;
+    top: 30rpx;
+    right: 110rpx;
+    display: block;
+    width: 52rpx;
+    height: 56rpx;
+    font-size: 52rpx;
+    color: #e6e6e6;
+    &.active {
+        &:after {
+            content: '';
+            position: absolute;
+            top: -6rpx;
+            right: -6rpx;
+            display: block;
+            width: 20rpx;
+            height: 20rpx;
+            border-radius: 100%;
+            overflow: hidden;
+            background: #ff0000;
+        }
+    }
+}
+.list {
+    position: relative;
+    padding-top: 134rpx;
+    padding-bottom: 64rpx;
+    -webkit-transition: all 0.3s ease-in-out;
+    -moz-transition: all 0.3s ease-in-out;
+    -o-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    .red-dot {
+        position: absolute;
+        top: 0rpx;
+        right: 0rpx;
+        display: block;
+        width: 20rpx;
+        height: 20rpx;
+        border-radius: 100%;
+        overflow: hidden;
+        background: #ff0000;
+    }
+    &.top {
+        margin-top: -658rpx;
+    }
+    .list-item {
+        position: relative;
+        display: block;
+        margin: 0 auto 40rpx auto;
+        width: 684rpx;
+        height: 484rpx;
+        overflow: hidden;
+        .gray {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .card {
+            display: block;
+            margin: 2rpx;
+            width: 680rpx;
+            height: 480rpx;
+        }
+        .kuang {
+            position: absolute;
+            top: 0;
+            left: 0;
+            display: block;
+            width: 684rpx;
+            height: 484rpx;
+        }
+        .card-name {
+            position: absolute;
+            left: 0px;
+            bottom: 0;
+            display: block;
+            padding-left: 40rpx;
+            width: 360rpx;
+            height: 110rpx;
+            line-height: 110rpx;
+            font-size: 36rpx;
+            color: #fff;
+            font-weight: bold;
+        }
+        .btn-lqjl {
+            position: absolute;
+            bottom: 20rpx;
+            right: 20rpx;
+            display: block;
+            width: 250rpx;
+            height: 68rpx;
+        }
+        .desc {
+            position: absolute;
+            bottom: 28rpx;
+            right: 30rpx;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            .icon-card {
+                display: block;
+                width: 52rpx;
+                height: 56rpx;
+                font-size: 52rpx;
+                color: #e6e6e6;
+            }
+            text {
+                display: block;
+                font-size: 30rpx;
+                color: #ffffff;
+                letter-spacing: 0;
+                &.card-num {
+                    color: #e80e18;
+                }
+            }
+        }
+    }
+}
+</style>
+<template>
+    <view class="page index">
+        <image class="bg" src="../images/bg1.jpg" mode="aspectFill" bindload="bgLoadEnd"></image>
+        <scroll-view wx:if="{{inited}}" scroll-y scroll-with-animation bindscrolltolower="bindscrolltolower">
+            <view class="list {{isTop ? 'top' : ''}}">
+                <view class="list-item" wx:for="{{list}}" wx:for-index="idx" wx:for-item="book" wx:key="{{idx}}">
+                    <image class="card" src="{{book.img_cover}}" lazy-load></image>
+                    <view class="gray" wx:if="{{book.is_view}}"></view>
+                    <image class="kuang" src="{{book.img_border}}" @tap="clickBook({{book.id}})" lazy-load></image>
+                    <text class="card-name ellipsis">{{book.name}}</text>
+                    <image class="btn-lqjl" src="../images/btn-lqjl.png" @tap="clickLqjl({{book.id}},{{book.prize_id}})" wx:if="{{book.reward_status == 1}}"></image>
+                    <view class="desc" wx:else>
+                        <text class="iconfont icon-qiapai icon-card"></text>
+                        <text class="card-num">{{book.user_card_num}}</text>
+                        <text class="card-maxnum">/{{book.card_num}}</text>
+                    </view>
+                    <view class="red-dot" wx:if="{{book.is_card_flag}}"></view>
+                </view>
+                <view class="list-item" wx:if="{{list.length>0}}">
+                    <image class="kuang" src="{{imghost}}/static_xcx/assets/commingsoon.png"></image>
+                </view>
+            </view>
+        </scroll-view>
+        <image class="logo" src="../images/logo.png"></image>
+        <text class="iconfont icon-xiaoxi msg {{unreadNum > 0 ?'active':''}}" @tap="clickMsg"></text>
+        <text class="iconfont icon-gerenzhongxin user" @tap="clickUser"></text>
+    </view>
+    <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import ut from '../util/Util';
+import Tips from '../util/Tips';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+    mixins = [https, auth];
+    data = {
+        imghost: cf.imghost,
+        unreadNum: 0,
+        cardId: '',
+        isTop: false,
+        inited: false
+    };
+    components = {
+        AuthAlert: AuthAlert
+    };
+    methods = {
+        clickLqjl (_bookId, _prizeId) {
+            ut.goPage('reward', { bookId: _bookId, prizeId: _prizeId });
+        },
+        clickMsg () {
+            ut.goPage('system');
+        },
+        clickUser () {
+            ut.goPage('user');
+        },
+        clickBook (_id) {
+            ut.goPage('cardlist', { bookId: _id });
+        },
+        bgLoadEnd () {
+            this.inited = true;
+        },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+    onShareAppMessage (options) { }
+    onLoad (opt) {
+        this.cardId = opt.cardId || '';
+        if (this.cardId) {
+            this.isTop = true;
+        }
+    }
+    getList (_init) {
+        this.wxRequests(
+            _init,
+            '/cardbook/getList',
+            res => {
+                if (res.code == 0) {
+                    let _list = [];
+                    if (res.data.top.hasOwnProperty('id')) {
+                        _list.push(res.data.top);
+                    }
+                    _list = _list.concat(res.data.entities).map(el => ({
+                        ...el,
+                        img_border: cf.imghost + el.img_border,
+                        img_cover: cf.imghost + el.img_cover
+                    }));
+                    this.list = this.list.concat(_list);
+                    this.$apply();
+                    if (this.cardId) {
+                        setTimeout(() => {
+                            this.isTop = false;
+                            this.$apply();
+                        }, 1000);
+                    }
+                }
+                else {
+                    Tips.toast(res.msg);
+                }
+            },
+            {
+                top: this.cardId
+            },
+            1,
+            1
+        );
+    }
+    bindscrolltolower () {
+        if (this.inited) {
+            cf.log("底部刷新")
+            this.getList(0)
+        }
+    }
+    onReady () {
+        cf.log("首页")
+    }
+    async onShow () {
+        cf.log("首页请求")
+        let _login = await this.isLogin();
+        if (_login.code == 0) {
+            this.getList(1);
+            this.wxRequest(
+                'msg/unread',
+                res => {
+                    if (res.code == 0) {
+                        this.unreadNum = res.data;
+                        this.$apply();
+                    }
+                },
+                {},
+                1
+            );
+        } else {
+            Tips.toast(_login.msg);
+        }
+    }
+}
+</script>

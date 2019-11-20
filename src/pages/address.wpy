@@ -1,0 +1,226 @@
+<style lang="less">
+.btn-confirm {
+    position: absolute;
+    left: 215rpx;
+    bottom: 130rpx;
+    display: block;
+    width: 320rpx;
+    height: 98rpx;
+}
+.list {
+    padding-top: 40rpx;
+    padding-bottom: 260rpx;
+    .list-item {
+        display: block;
+        margin-bottom: 30rpx;
+        padding: 20rpx 40rpx 0 40rpx;
+        width: 100%;
+        color: #ffffff;
+        background-color: rgba(0, 0, 0, 0.5);
+        border-top: 1px solid rgba(255, 255, 255, 0.4);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+        &:last-child {
+            margin-bottom: 0;
+        }
+        .user {
+            display: flex;
+            align-items: center;
+            color: #ffffff;
+            font-size: 48rpx;
+            .name,
+            .phone {
+                display: block;
+            }
+            .phone {
+                padding-left: 20rpx;
+            }
+        }
+        .address {
+            display: block;
+            margin-top: 10rpx;
+            margin-bottom: 20rpx;
+            color: #ffffff;
+            font-size: 32rpx;
+            .address-cont {
+                display: block;
+            }
+        }
+        .menu-warp {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80rpx;
+            border-top: 1px solid rgba(255, 255, 255, 0.4);
+            .menu-left,
+            .menu-right {
+                display: flex;
+                align-items: center;
+            }
+            .menu-btn {
+                display: flex;
+                align-items: center;
+                margin-right: 20rpx;
+                font-size: 32rpx;
+                color: #ffffff;
+                &:last-child {
+                    margin-right: 0rpx;
+                }
+                .iconfont {
+                    font-size: 36rpx;
+                    width: 36rpx;
+                    height: 40rpx;
+                    ~ text {
+                        padding-left: 10rpx;
+                    }
+                }
+            }
+        }
+    }
+}
+</style>
+<template>
+    <view class="page">
+        <image class="bg" src="../images/bg2.jpg" mode="aspectFill"></image>
+        <scroll-view scroll-y scroll-top="{{scrollTop}}" scroll-with-animation="{{scrollAnimation}}">
+            <view class="list">
+                <view class="list-item" wx:for="{{list}}" wx:key="{{index}}">
+                    <view class="list-item-cont" @tap="clickDetail({{index}})">
+                        <view class="user">
+                            <text class="name ellipsis">{{item.name}}</text>
+                            <text class="phone">{{item.mobile}}</text>
+                        </view>
+                        <view class="address">
+                            <text class="address-cont ellipsis">{{item.province_name + item.city_name + item.area_name + item.address}}</text>
+                        </view>
+                    </view>
+                    <view class="menu-warp">
+                        <view class="menu-left">
+                            <view class="menu-btn" @tap="clickDefault({{index}})">
+                                <text class="iconfont {{item.is_default ? 'icon-gouxuanchenggong':'icon-weigouxuan'}} icon-quan"></text>
+                                <text>设为默认</text>
+                            </view>
+                        </view>
+                        <view class="menu-right">
+                            <view class="menu-btn" @tap="clickDel({{index}})" wx:if="{{isEdit != 0}}">
+                                <text class="iconfont icon-shanchu icon-del"></text>
+                                <text>删除</text>
+                            </view>
+                            <view class="menu-btn" @tap="clickEdit({{index}})">
+                                <text class="iconfont icon-bianji icon-edit"></text>
+                                <text>编辑</text>
+                            </view>
+                        </view>
+                    </view>
+                </view>
+            </view>
+        </scroll-view>
+        <image class="btn-confirm" src="../images/btn-xzdz.png" @tap="clickConfirm"></image>
+    </view>
+    <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import ut from '../util/Util';
+import Tips from '../util/Tips';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+    config = {
+        navigationBarTitleText: '收货信息'
+    };
+    mixins = [https, auth];
+    data = {
+        isEdit: 0,
+        isSel: 0
+    };
+    components = {
+        AuthAlert: AuthAlert
+    };
+    methods = {
+        clickDefault (_index) {
+            this.list = this.list.map((_el, _idx) => ({
+                ..._el,
+                is_default: _index == _idx ? 1 : 0
+            }));
+            this.wxRequest(
+                'address/setDefault',
+                res => {
+                    if (res.code == 0) {
+                    }
+                    else {
+                        Tips.toast(res.msg);
+                    }
+                },
+                { id: this.list[_index].id },
+                1
+            );
+        },
+        clickDel (_index) {
+            let _id = this.list[_index].id;
+            Tips.confirm('是否删除该地址', res => {
+                this.list.splice(_index, 1);
+                this.$apply();
+                this.wxRequest(
+                    'address/del',
+                    res => {
+                        if (res.code == 0) {
+                        }
+                    },
+                    { id: _id },
+                    1
+                );
+            });
+        },
+        clickDetail (_index) {
+            ut.setStorageSync('addressadd', this.list[_index]);
+            if (this.isSel) {
+                ut.goPageBack(1);
+            }
+            else {
+                ut.goPage('addressadd', { isEdit: 0 });
+            }
+        },
+        clickEdit (_index) {
+            ut.setStorageSync('addressadd', this.list[_index]);
+            ut.goPage('addressadd', { isEdit: 2 });
+        },
+        clickConfirm (_index) {
+            ut.setStorageSync('addressadd', '');
+            ut.goPage('addressadd', { isEdit: 1 });
+        },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+    onLoad (_opt) {
+        this.isEdit = _opt.isEdit || 0;
+        this.isSel = _opt.isSel || 0;
+    }
+    async onShow () {
+        this.wxRequests(
+            1,
+            '/address/getList',
+            res => {
+                cf.log(res);
+                if (res.code == 0) {
+                    this.list = res.data.entities;
+                    this.$apply();
+                }
+                else {
+                    Tips.toast(res.msg);
+                }
+            },
+            {},
+            1, 1
+        );
+    }
+}
+</script>

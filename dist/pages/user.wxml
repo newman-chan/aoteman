@@ -1,0 +1,14 @@
+
+  <view class="page">
+    <image class="bg" src="../images/bg2.jpg" mode="aspectFill"/>
+    <view class="cont">
+      <view class="btn">
+        <text>已使用微信账号登录</text>
+        <image class="icon-wx" src="../images/icon-wx.png"/>
+      </view>
+      <view class="btn">
+        <text>收货信息</text>
+        <image class="icon-wl" src="../images/icon-wl.png" bindtap="clickAddress"/>
+      </view>
+    </view>
+  </view>

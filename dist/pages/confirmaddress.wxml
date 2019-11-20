@@ -1,0 +1,22 @@
+
+    <view class="page">
+        <image class="bg" src="../images/bg2.jpg" mode="aspectFill"/>
+        <view class="address">
+            <image class="address-bg" src="../images/address.png"/>
+            <text class="user-name ellipsis">{{address.name}}</text>
+            <text class="user-phone ellipsis">{{address.mobile}}</text>
+            <text class="user-dz ellipsis2">{{(address.province_name + address.city_name + address.area_name + address.address)||''}}</text>
+        </view>
+        <image class="btn-confirm" src="../images/btn-confirm.png" bindtap="clickConfirm"/>
+        <image class="btn-qtdz" src="../images/btn-qtdz.png" bindtap="clickQtdz"/>
+    </view>
+    
+    <view class="o-alert {{$AuthAlert$isShow ? '':'hide'}}" catchtouchmove="$AuthAlert$catchtouchmove"  wx:if="{{$AuthAlert$hasUserInfo}}">
+        <view class="o-alert-cont">
+            <view class="o-pannel">
+                <view class="o-title">微信授权</view>
+                <view class="o-desc">小程序需要获取你的公开信息(昵称、头像等)</view>
+                <button wx:if="{{$AuthAlert$canIUse}}" open-type="getUserInfo" bindtap="$AuthAlert$clickEvt" bindgetuserinfo="$AuthAlert$getUserInfo">确认</button>
+            </view>
+        </view>
+    </view>

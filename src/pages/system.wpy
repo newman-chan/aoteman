@@ -1,0 +1,118 @@
+<style lang="less">
+.c-group {
+    padding-top: 40rpx;
+    .c-item {
+        position: relative;
+        display: -webkit-box;
+        width: 100%;
+        height: 100rpx;
+        line-height: 100rpx;
+        padding-left: 40rpx;
+        padding-right: 60rpx;
+        color: #ffffff;
+        font-size: 30rpx;
+        border-top: 1px solid rgba(255, 255, 255, 0.5);
+        background-color: rgba(0, 0, 0, 0.5);
+        .icon-arrow {
+            &.read {
+                .iconfont {
+                    color: #666;
+                }
+            }
+        }
+        .desc {
+            -webkit-box-flex: 1;
+            display: block;
+            width: 100%;
+            height: 100rpx;
+            &.read {
+                color: #666;
+            }
+        }
+    }
+}
+</style>
+<template>
+    <view class="page">
+        <image class="bg" src="../images/bg2.jpg" mode="aspectFill"></image>
+        <scroll-view scroll-y scroll-with-animation="true">
+            <view class="c-group">
+                <view class="c-item" wx:for="{{list}}" wx:key="{{index}}" @tap="clickMsg({{index}})">
+                    <view class="icon-arrow {{item.is_read ? 'read' : ''}}">
+                        <text class="iconfont icon-youjiantou"></text>
+                    </view>
+                    <text class="desc ellipsis {{item.is_read ? 'read' : ''}}">{{item.title}}</text>
+                </view>
+            </view>
+        </scroll-view>
+    </view>
+    <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import ut from '../util/Util';
+import Tips from '../util/Tips';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+    config = {
+        navigationBarTitleText: '系统信息'
+    };
+    mixins = [https, auth];
+    data = {
+        inited: false
+    };
+    components = {
+        AuthAlert: AuthAlert
+    };
+    methods = {
+        clickMsg (_index) {
+            ut.goPage('systemdetail', { id: this.list[_index].id });
+        },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+    getList (_init) {
+        this.wxRequests(
+            _init,
+            '/msg/getList',
+            res => {
+                cf.log(res);
+                if (res.code == 0) {
+                    this.inited = true;
+                    this.list = res.data.entities;
+                    this.$apply();
+                }
+                else {
+                    Tips.toast(res.msg);
+                }
+            },
+            {},
+            1,
+            1
+        );
+    }
+    onLoad (opt) { }
+    bindscrolltolower () {
+        if (this.inited) {
+            cf.log("底部刷新")
+            this.getList(0)
+        }
+    }
+    onReady () {
+
+    }
+    onShow () {
+        this.getList(30)
+    }
+}
+</script>

@@ -1,0 +1,5 @@
+
+  <view class="page">
+    <image class="bg" src="../images/bg-jl.jpg" mode="aspectFill"/>
+    <image class="btn-lqjl" src="../images/btn-lqjl.png" bindtap="clickLqjl"/>
+  </view>

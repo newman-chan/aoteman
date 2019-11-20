@@ -1,0 +1,143 @@
+@import "./../components/AuthAlert.wxss";
+.logo {
+  position: absolute;
+  top: 26rpx;
+  left: 33rpx;
+  display: block;
+  width: 373rpx;
+  height: 68rpx;
+}
+.user {
+  position: absolute;
+  top: 30rpx;
+  right: 30rpx;
+  display: block;
+  width: 52rpx;
+  height: 56rpx;
+  font-size: 52rpx;
+  color: #e6e6e6;
+}
+.msg {
+  position: absolute;
+  top: 30rpx;
+  right: 110rpx;
+  display: block;
+  width: 52rpx;
+  height: 56rpx;
+  font-size: 52rpx;
+  color: #e6e6e6;
+}
+.msg.active:after {
+  content: '';
+  position: absolute;
+  top: -6rpx;
+  right: -6rpx;
+  display: block;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 100%;
+  overflow: hidden;
+  background: #ff0000;
+}
+.list {
+  position: relative;
+  padding-top: 134rpx;
+  padding-bottom: 64rpx;
+  -webkit-transition: all 0.3s ease-in-out;
+  -moz-transition: all 0.3s ease-in-out;
+  -o-transition: all 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+}
+.list .red-dot {
+  position: absolute;
+  top: 0rpx;
+  right: 0rpx;
+  display: block;
+  width: 20rpx;
+  height: 20rpx;
+  border-radius: 100%;
+  overflow: hidden;
+  background: #ff0000;
+}
+.list.top {
+  margin-top: -658rpx;
+}
+.list .list-item {
+  position: relative;
+  display: block;
+  margin: 0 auto 40rpx auto;
+  width: 684rpx;
+  height: 484rpx;
+  overflow: hidden;
+}
+.list .list-item .gray {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.list .list-item:last-child {
+  margin-bottom: 0;
+}
+.list .list-item .card {
+  display: block;
+  margin: 2rpx;
+  width: 680rpx;
+  height: 480rpx;
+}
+.list .list-item .kuang {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 684rpx;
+  height: 484rpx;
+}
+.list .list-item .card-name {
+  position: absolute;
+  left: 0px;
+  bottom: 0;
+  display: block;
+  padding-left: 40rpx;
+  width: 360rpx;
+  height: 110rpx;
+  line-height: 110rpx;
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: bold;
+}
+.list .list-item .btn-lqjl {
+  position: absolute;
+  bottom: 20rpx;
+  right: 20rpx;
+  display: block;
+  width: 250rpx;
+  height: 68rpx;
+}
+.list .list-item .desc {
+  position: absolute;
+  bottom: 28rpx;
+  right: 30rpx;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.list .list-item .desc .icon-card {
+  display: block;
+  width: 52rpx;
+  height: 56rpx;
+  font-size: 52rpx;
+  color: #e6e6e6;
+}
+.list .list-item .desc text {
+  display: block;
+  font-size: 30rpx;
+  color: #ffffff;
+  letter-spacing: 0;
+}
+.list .list-item .desc text.card-num {
+  color: #e80e18;
+}

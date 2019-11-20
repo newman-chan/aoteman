@@ -1,0 +1,16 @@
+{
+	"description": "a wepy in aoteman",
+	"setting": {
+		"urlCheck": true,
+		"es6": false,
+		"postcss": false,
+		"minified": false
+	},
+	"compileType": "miniprogram",
+	"appid": "wx29ca8c6a6da0afc4",
+	"projectname": "%E5%A5%A5%E7%89%B9%E4%B9%8B%E9%AD%82",
+	"miniprogramRoot": "dist/",
+	"simulatorType": "wechat",
+	"simulatorPluginLibVersion": {},
+	"condition": {}
+}

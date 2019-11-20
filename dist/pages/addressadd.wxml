@@ -1,0 +1,39 @@
+
+  <view class="page">
+    <image class="bg" src="../images/bg2.jpg" mode="aspectFill"/>
+    <scroll-view scroll-y scroll-with-animation="true">
+      <text class="tip">*温馨提示：为了确保您可以顺利收到快递，请填写完整信息。</text>
+      <view class="c-group">
+        <view class="c-item">
+          <text>收货人：</text>
+          <input type="text" placeholder="输入收货人" bindinput="bindinput" value="{{entity.name}}" maxlength="10" disabled="{{isEdit == 0}}" data-wpybindinput-a="name"/>
+        </view>
+        <view class="c-item">
+          <text>联系方式：</text>
+          <input type="number" placeholder="输入联系方式：" bindinput="bindinput" value="{{entity.mobile}}" maxlength="11" disabled="{{isEdit == 0}}" data-wpybindinput-a="mobile"/>
+        </view>
+        <view class="c-item">
+          <picker  wx:if="{{isEdit != 0}}" class="icon-arrow" mode="multiSelector" bindchange="bindMultiPickerChange" bindcolumnchange="bindMultiPickerColumnChange" value="{{multiIndex}}" range-key="name" range="{{multiArray}}">
+            <text class="iconfont icon-youjiantou"/>
+          </picker>
+          <text>所在地区：</text>
+          <input type="text" placeholder="选择地区：" value="{{entity.province_name + entity.city_name + entity.area_name}}" disabled/>
+        </view>
+        <view class="c-item">
+          <text>详细地址：</text>
+          <input class="dz" type="text" placeholder="输入详细地址" bindinput="bindinput" value="{{entity.address}}" disabled="{{isEdit == 0}}" data-wpybindinput-a="address"/>
+        </view>
+      </view>
+    </scroll-view>
+    <image class="btn-confirm" src="../images/btn-ok.png" bindtap="clickConfirm"  wx:if="{{isEdit != 0}}"/>
+  </view>
+  
+    <view class="o-alert {{$AuthAlert$isShow ? '':'hide'}}" catchtouchmove="$AuthAlert$catchtouchmove"  wx:if="{{$AuthAlert$hasUserInfo}}">
+        <view class="o-alert-cont">
+            <view class="o-pannel">
+                <view class="o-title">微信授权</view>
+                <view class="o-desc">小程序需要获取你的公开信息(昵称、头像等)</view>
+                <button wx:if="{{$AuthAlert$canIUse}}" open-type="getUserInfo" bindtap="$AuthAlert$clickEvt" bindgetuserinfo="$AuthAlert$getUserInfo">确认</button>
+            </view>
+        </view>
+    </view>

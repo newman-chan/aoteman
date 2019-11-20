@@ -1,0 +1,38 @@
+
+    <view class="page">
+        <image class="bg" src="../images/bg3.jpg" mode="aspectFill"/>
+        <image class="ani-lan" src="../images/dhpic1.png" animation="{{lanAnimationData}}"/>
+        <image class="card {{showFilter ?'cardFilter':''}}" src="{{imgCard}}" bindload="cardLoadend" binderror="cardLoadErr" animation="{{cardAnimationData}}"/>
+        <view class="guang">
+            <image class="ani-guang" src="../images/guang.png" animation="{{guangAnimationData}}"/>
+        </view>
+        <image class="ani-hong" src="../images/dhpic2.png" animation="{{hongAnimationData}}"/>
+        <image class="ani-bai" src="../images/dhpic3.png" animation="{{baiAnimationData}}"/>
+        <image class="ani-tip-back {{activation ? 'active':''}}" src="{{activation ? '../images/dhtext1.png' : '../images/successful1.png'}}" animation="{{tipBackAnimationData}}"/>
+        <image class="ani-tip-front {{activation ? 'active':''}}" src="{{activation ? '../images/dhtext.png' : '../images/successful.png'}}" animation="{{tipFrontAnimationData}}"/>
+
+        <view class="hide-card-warp ani {{showHideCardWarp ?'active':''}}">
+            <image class="hide-card-arrow left" animation="{{arrowLeftAnimationData}}" src="../images/hidecard-arrow-l.png"/>
+            <image class="hide-card-arrow right" animation="{{arrowRightAnimationData}}" src="../images/hidecard-arrow-r.png"/>
+            <image class="card-tip" src="../images/showhidecard.png" animation="{{cardTipAnimationData}}"/>
+            <view class="hide-card {{showHideCard ?'active':''}}">
+                <view class="img p0" animation="{{hideBackAnimationData}}">
+                    <image src="../images/hidecard.png"/>
+                </view>
+                <view class="img p1" animation="{{hideFrontAnimationData}}">
+                    <image class="{{showHideFilter?'cardFilter':''}}" src="{{hideImgCard}}"/>
+                </view>
+            </view>
+        </view>
+        <image class="btn-ok {{isLook ? 'look' :''}} {{showBtn ? 'active':''}}" src="../images/{{isLook ? 'btn-look':'btn-ok'}}.png" bindtap="btnOkClick"/>
+    </view>
+    
+    <view class="o-alert {{$AuthAlert$isShow ? '':'hide'}}" catchtouchmove="$AuthAlert$catchtouchmove"  wx:if="{{$AuthAlert$hasUserInfo}}">
+        <view class="o-alert-cont">
+            <view class="o-pannel">
+                <view class="o-title">微信授权</view>
+                <view class="o-desc">小程序需要获取你的公开信息(昵称、头像等)</view>
+                <button wx:if="{{$AuthAlert$canIUse}}" open-type="getUserInfo" bindtap="$AuthAlert$clickEvt" bindgetuserinfo="$AuthAlert$getUserInfo">确认</button>
+            </view>
+        </view>
+    </view>

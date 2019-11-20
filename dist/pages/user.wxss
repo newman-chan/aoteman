@@ -1,0 +1,35 @@
+.page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.cont {
+  position: relative;
+  width: 100%;
+}
+.cont .btn {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+.cont .btn:last-child {
+  margin-top: 160rpx;
+}
+.cont text {
+  display: block;
+  margin-bottom: 10rpx;
+  font-size: 30rpx;
+  color: #ffffff;
+}
+.cont .icon-wx {
+  display: block;
+  margin: auto;
+  width: 257rpx;
+  height: 244rpx;
+}
+.cont .icon-wl {
+  display: block;
+  margin: auto;
+  width: 265rpx;
+  height: 243rpx;
+}

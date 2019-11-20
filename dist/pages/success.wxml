@@ -1,0 +1,8 @@
+
+  <view class="page">
+    <image class="bg" src="../images/bg2.jpg" mode="aspectFill"/>
+    <image class="chest" src="../images/chest.png"/>
+    <image class="btn-confirm" src="../images/btn-know.png" bindtap="clickConfirm"/>
+    <text class="desc" style="padding-top: 85rpx;">即将送出奖励，预计5-8个工作日送到</text>
+    <text class="desc">请注意关注首页的信息。</text>
+  </view>

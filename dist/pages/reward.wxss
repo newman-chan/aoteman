@@ -1,0 +1,8 @@
+.btn-lqjl {
+  position: absolute;
+  left: 195rpx;
+  bottom: 100rpx;
+  display: block;
+  width: 360rpx;
+  height: 98rpx;
+}

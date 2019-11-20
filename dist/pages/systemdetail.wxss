@@ -1,0 +1,27 @@
+@import "./../components/AuthAlert.wxss";
+.btn-lqjl {
+  position: relative;
+  display: block;
+  padding-bottom: 60rpx;
+  margin: auto;
+  width: 360rpx;
+  height: 98rpx;
+}
+.cont {
+  position: relative;
+  padding: 60rpx 40rpx;
+  min-height: 490rpx;
+}
+.cont .title {
+  display: block;
+  font-size: 24rpx;
+  color: #ffffff;
+}
+.cont .desc {
+  display: block;
+  margin-top: 20rpx;
+  font-size: 30rpx;
+  color: #ffffff;
+  line-height: 36rpx;
+  text-align: justify;
+}

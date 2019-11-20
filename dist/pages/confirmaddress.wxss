@@ -1,0 +1,53 @@
+@import "./../components/AuthAlert.wxss";
+.address {
+  position: absolute;
+  top: 185rpx;
+  left: 25rpx;
+  display: block;
+  width: 700rpx;
+  height: 477rpx;
+}
+.address .address-bg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.address text {
+  font-size: 28rpx;
+}
+.address text.user-name {
+  position: absolute;
+  left: 80rpx;
+  top: 190rpx;
+  font-weight: bold;
+  width: 220rpx;
+}
+.address text.user-phone {
+  position: absolute;
+  left: 340rpx;
+  top: 190rpx;
+  font-weight: bold;
+  width: 280rpx;
+}
+.address text.user-dz {
+  position: absolute;
+  left: 80rpx;
+  top: 330rpx;
+  width: 540rpx;
+}
+.btn-confirm {
+  position: absolute;
+  left: 38rpx;
+  bottom: 130rpx;
+  display: block;
+  width: 320rpx;
+  height: 98rpx;
+}
+.btn-qtdz {
+  position: absolute;
+  right: 38rpx;
+  bottom: 130rpx;
+  display: block;
+  width: 320rpx;
+  height: 98rpx;
+}

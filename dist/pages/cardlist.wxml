@@ -1,0 +1,55 @@
+
+  <view class="page">
+    <image  wx:if="{{imgBg}}" class="bg" src="{{imghost + imgBg}}" mode="aspectFill" bindload="bgLoadEnd"/>
+    
+    <image class="btn-left {{swiperPages.length > 1 ? '':'hide'}}" bindtap="clickLeft" src="{{swiperIndex == 0 ? '../images/btn-left-nor.png' : '../images/btn-left-sel.png'}}"/>
+    <image class="btn-right {{swiperPages.length > 1 ? '':'hide'}}" bindtap="clickRight" src="{{swiperIndex == swiperPages.length - 1 ? '../images/btn-right-nor.png' : '../images/btn-right-sel.png'}}"/>
+  </view>
+  <swiper indicator-dots="{{swiperPages.length > 1 ? true:false}}" indicator-color="rgba(255,255,255,.5)" current="{{swiperIndex}}" indicator-active-color="#ffffff" bindchange="swiperChange" bindanimationfinish="swiperAniEnd">
+    <block  wx:for="{{swiperPages}}" wx:for-index="pIndex" wx:for-item="page" wx:key="{{pIndex}}">
+      <swiper-item>
+        <view class="slide-image" wx:for="{{page}}" wx:for-index="idx" wx:for-item="card" wx:key="{{idx}}" bindtap="clickCard" data-wpyclickcard-a="{{pIndex}}" data-wpyclickcard-b="{{idx}}">
+          <image wx:if="{{card._active}}" src="{{card.rarity.text == 'HSR' && card.is_have == 0 ? '../images/hidecard.png':card.img_small}}" lazy-load="lazy-load"/>
+          <view wx:if="{{card.is_have == 0 && card.rarity.text != 'HSR'}}" class="no-active"/>
+          <view class="red-dot" wx:if="{{card.is_view == 0 && card.is_have == 1}}"/>
+        </view>
+      </swiper-item>
+    </block>
+  </swiper>
+  <view class="card-detail" catchtouchmove="catchtouchmove"  wx:if="{{showCard}}">
+    <view class="maskbg" bindtap="closeCard"/>
+    <image class="mask" wx:if="{{prevCard._mask}}" src="{{prevCard.img_video}}" lazy-load="lazy-load" bindtap="closeCard"/>
+    <view class="cont" bindtap="clickPlay">
+      <image class="kuang" src="{{imghost}}/static_xcx/assets/card-{{prevCard.rarity.text}}.png" lazy-load="lazy-load"/>
+      <view class="pic-warp">
+        <image class="pic {{showFilter ? 'cardFilter' : ''}}" src="{{prevCard._pic}}" bindload="cardLoadend"/>
+        <view wx:if="{{!prevCard._activation}}" class="no-active"/>
+      </view>
+      <view class="desc" wx:if="{{prevCard._showCardNum && prevCard.code_num>0}}">
+        <text class="iconfont icon-qiapai icon-card"/>
+        <text class="card-num">{{prevCard.code_num}}</text>
+      </view>
+      <view class="name">{{prevCard._showCardNum ? prevCard.name:'神秘卡牌'}}</view>
+      <view class="rank">{{prevCard.is_have ? '第'+prevCard.rank+'个拥有此卡': prevCard._showCardNum ?'您未收集此卡':'收集齐其他卡牌后自动激活！'}}</view>
+    </view>
+    <image class="btn-play" wx:if="{{prevCard._mask && prevCard._activation}}" src="../images/btn-play.png" bindtap="clickPlay"/>
+  </view>
+  <view class="section"  wx:if="{{showvideo}}">
+    <video src="{{prevCard.video}}" objectFit="cover" enable-progress-gesture="{{videoBtn}}" direction="-90" autoplay show-center-play-btn="{{videoBtn}}" show-play-btn="{{videoBtn}}" show-fullscreen-btn="{{videoBtn}}" controls="{{videoBtn}}" bindended="videoEnd" binderror="videoError">
+      <cover-view class="video-mask" bindtap="clickQuit" catchtouchmove="catchtouchmove">
+          <cover-view class="btn-play ani {{quitTimer ?'active':''}}">
+            快速双击退出视频
+          </cover-view>
+      </cover-view>
+    </video>
+  </view>
+  
+    <view class="o-alert {{$AuthAlert$isShow ? '':'hide'}}" catchtouchmove="$AuthAlert$catchtouchmove"  wx:if="{{$AuthAlert$hasUserInfo}}">
+        <view class="o-alert-cont">
+            <view class="o-pannel">
+                <view class="o-title">微信授权</view>
+                <view class="o-desc">小程序需要获取你的公开信息(昵称、头像等)</view>
+                <button wx:if="{{$AuthAlert$canIUse}}" open-type="getUserInfo" bindtap="$AuthAlert$clickEvt" bindgetuserinfo="$AuthAlert$getUserInfo">确认</button>
+            </view>
+        </view>
+    </view>

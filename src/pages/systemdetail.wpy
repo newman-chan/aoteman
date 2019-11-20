@@ -1,0 +1,132 @@
+<style lang="less">
+.btn-lqjl {
+    position: relative;
+    display: block;
+    padding-bottom: 60rpx;
+    margin: auto;
+    width: 360rpx;
+    height: 98rpx;
+}
+.cont {
+    position: relative;
+    padding: 60rpx 40rpx;
+    min-height: 490rpx;
+    .title {
+        display: block;
+        font-size: 24rpx;
+        color: #ffffff;
+    }
+    .desc {
+        display: block;
+        margin-top: 20rpx;
+        font-size: 30rpx;
+        color: #ffffff;
+        line-height: 36rpx;
+        text-align: justify;
+    }
+}
+</style>
+<template>
+    <view class="page">
+        <image class="bg" src="../images/bg2.jpg" mode="aspectFill"></image>
+        <scroll-view scroll-y scroll-with-animation="true">
+            <view class="cont">
+                <text class="title">{{entity.title}} {{entity.created_at}}</text>
+                <text class="desc">{{entity.content}}</text>
+            </view>
+            <image class="btn-lqjl {{showBtn?'':'hide'}}" src="../images/btn-qwcx.png" @tap="clickLook({{entity.scene}})"></image>
+        </scroll-view>
+    </view>
+    <AuthAlert @childFn.user="authFn"></AuthAlert>
+</template>
+
+<script>
+import wepy from 'wepy';
+import cf from '../config';
+import ut from '../util/Util';
+import https from '../mixins/Https';
+import auth from '../mixins/Auth';
+import Tips from '../util/Tips';
+import AuthAlert from '../components/AuthAlert';
+
+export default class Index extends wepy.page {
+    config = {
+        navigationBarTitleText: ''
+    };
+    mixins = [https, auth];
+    data = {
+        showBtn: false,
+        msgId: '',
+        entity: {}
+    };
+    components = {
+        AuthAlert: AuthAlert
+    };
+    methods = {
+        clickLook () {
+            //1.扫码获得卡牌 2.领取卡册奖励 3.卡册奖励寄出 4.提醒收取卡册奖励 5.卡册上新
+            switch (this.entity.scene) {
+                case 1:
+                    let _q = this.entity.scene_value;
+                    let _qAr = _q.split('?');
+                    let _obj = {};
+
+                    let _params =
+                        _qAr.length > 1 ? _qAr[1].split('&') : _qAr[0].split('&');
+                    for (let i = 0; i < _params.length; i++) {
+                        var _fields = _params[i].split('=');
+                        if (_fields.length > 1) {
+                            _obj[_fields[0]] = _fields[1];
+                        }
+                    }
+                    cf.log(_obj);
+                    ut.goPage('cardlist', _obj);
+                    break;
+                case 4:
+                    ut.goPage('index');
+                    break;
+                default:
+                    break;
+            }
+        },
+        authFn (__res, __code, __callback) {
+            this.$parent.globalData.userInfo = __res.detail.userInfo;
+            this.userLogin(__code, __callback);
+        }
+    };
+    authAlertShow (__code, __callback) {
+        this.$invoke('AuthAlert', 'alertShow', __code, __callback);
+    }
+    onLoad (_opt) {
+        this.msgId = _opt.id;
+    }
+    onShow () {
+        this.wxRequest(
+            'msg/detail',
+            res => {
+                cf.log(res);
+                if (res.code == 0) {
+                    this.entity = res.data.entity;
+                    wx.setNavigationBarTitle({
+                        title: this.entity.title
+                    });
+                    this.showBtn =
+                        this.entity.scene == 1 || this.entity.scene == 4 ? true : false;
+                    this.entity.created_at = ut.formatTime(
+                        this.entity.created_at ? this.entity.created_at * 1000 : 0,
+                        '/',
+                        1
+                    );
+                    this.$apply();
+                }
+                else {
+                    Tips.toast(res.msg);
+                }
+            },
+            { id: this.msgId },
+            1,
+            1
+        );
+    }
+}
+</script>

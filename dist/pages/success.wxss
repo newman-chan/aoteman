@@ -1,0 +1,25 @@
+.chest {
+  position: absolute;
+  top: 255rpx;
+  left: 104rpx;
+  display: block;
+  width: 541rpx;
+  height: 631rpx;
+}
+.btn-confirm {
+  position: absolute;
+  left: 215rpx;
+  bottom: 130rpx;
+  display: block;
+  width: 320rpx;
+  height: 98rpx;
+}
+.desc {
+  position: relative;
+  z-index: 10;
+  display: block;
+  text-align: center;
+  font-size: 36rpx;
+  color: #ffffff;
+  text-shadow: 0 0 8px #1c39ff;
+}

@@ -1,0 +1,29 @@
+@import "./../components/AuthAlert.wxss";
+.c-group {
+  padding-top: 40rpx;
+}
+.c-group .c-item {
+  position: relative;
+  display: -webkit-box;
+  width: 100%;
+  height: 100rpx;
+  line-height: 100rpx;
+  padding-left: 40rpx;
+  padding-right: 60rpx;
+  color: #ffffff;
+  font-size: 30rpx;
+  border-top: 1px solid rgba(255, 255, 255, 0.5);
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.c-group .c-item .icon-arrow.read .iconfont {
+  color: #666;
+}
+.c-group .c-item .desc {
+  -webkit-box-flex: 1;
+  display: block;
+  width: 100%;
+  height: 100rpx;
+}
+.c-group .c-item .desc.read {
+  color: #666;
+}

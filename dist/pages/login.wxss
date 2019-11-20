@@ -1,0 +1,9 @@
+.msg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40rpx;
+  width: 100%;
+  height: 100%;
+  font-size: 24rpx;
+}

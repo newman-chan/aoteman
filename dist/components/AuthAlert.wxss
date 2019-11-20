@@ -1,0 +1,54 @@
+.o-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  display: table;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  font-size: 24rpx;
+}
+.o-alert .o-alert-cont {
+  display: table-cell;
+  vertical-align: middle;
+}
+.o-alert .o-alert-cont .o-pannel {
+  display: block;
+  margin: auto;
+  width: 70%;
+  background-color: #ffffff;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+.o-alert .o-alert-cont .o-pannel .o-title {
+  font-size: 32rpx;
+  padding: 20rpx;
+  border-bottom: 1px solid #eeeeee;
+}
+.o-alert .o-alert-cont .o-pannel .o-desc {
+  padding: 40rpx 10rpx;
+}
+.o-alert .o-alert-cont .o-pannel button {
+  color: #1aad19;
+  font-size: 32rpx;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  background-color: #ffffff;
+  border-top: 1px solid #eeeeee;
+  border-radius: 0;
+}
+.o-alert .o-alert-cont .o-pannel button:after {
+  border: none;
+}
+.o-alert .o-alert-cont .o-pannel .button-hover {
+  background-color: #e0e0e0;
+}
+.o-alert .o-alert-cont .o-pannel .button-hover:after,
+.o-alert .o-alert-cont .o-pannel .button-hover:before {
+  border: none;
+}

@@ -1,0 +1,79 @@
+@import "./../components/AuthAlert.wxss";
+.btn-confirm {
+  position: absolute;
+  left: 215rpx;
+  bottom: 130rpx;
+  display: block;
+  width: 320rpx;
+  height: 98rpx;
+}
+.list {
+  padding-top: 40rpx;
+  padding-bottom: 260rpx;
+}
+.list .list-item {
+  display: block;
+  margin-bottom: 30rpx;
+  padding: 20rpx 40rpx 0 40rpx;
+  width: 100%;
+  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.4);
+}
+.list .list-item:last-child {
+  margin-bottom: 0;
+}
+.list .list-item .user {
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+  font-size: 48rpx;
+}
+.list .list-item .user .name,
+.list .list-item .user .phone {
+  display: block;
+}
+.list .list-item .user .phone {
+  padding-left: 20rpx;
+}
+.list .list-item .address {
+  display: block;
+  margin-top: 10rpx;
+  margin-bottom: 20rpx;
+  color: #ffffff;
+  font-size: 32rpx;
+}
+.list .list-item .address .address-cont {
+  display: block;
+}
+.list .list-item .menu-warp {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80rpx;
+  border-top: 1px solid rgba(255, 255, 255, 0.4);
+}
+.list .list-item .menu-warp .menu-left,
+.list .list-item .menu-warp .menu-right {
+  display: flex;
+  align-items: center;
+}
+.list .list-item .menu-warp .menu-btn {
+  display: flex;
+  align-items: center;
+  margin-right: 20rpx;
+  font-size: 32rpx;
+  color: #ffffff;
+}
+.list .list-item .menu-warp .menu-btn:last-child {
+  margin-right: 0rpx;
+}
+.list .list-item .menu-warp .menu-btn .iconfont {
+  font-size: 36rpx;
+  width: 36rpx;
+  height: 40rpx;
+}
+.list .list-item .menu-warp .menu-btn .iconfont ~ text {
+  padding-left: 10rpx;
+}

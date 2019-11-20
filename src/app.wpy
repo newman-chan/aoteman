@@ -1,0 +1,213 @@
+
+<style lang="less">
+@import './font/iconfont.wxss';
+
+view,
+text {
+  font-family: 'PingFang SC Regular', 'PingFang-SC-Regular', '微软雅黑',
+    'Microsoft YaHei', -apple-system-font, 'Helvetica Neue', 'Hiragino Sans GB',
+    sans-serif;
+}
+page,
+view,
+text,
+scroll-view,
+swiper,
+swiper-item,
+picker {
+  box-sizing: border-box;
+}
+.page,
+page {
+  position: relative;
+  height: 100%;
+}
+scroll-view,
+.scroll-cont {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+.bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.icon-arrow {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: block;
+  width: 100rpx;
+  height: 100rpx;
+  padding-right: 40rpx;
+  text-align: right;
+  .iconfont {
+    display: block;
+    font-size: 24rpx;
+    color: #ffffff;
+  }
+  ~ input {
+    padding-right: 60rpx;
+  }
+}
+.hide {
+  display: none !important;
+}
+.ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ellipsis2 {
+  display: -webkit-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+  white-space: normal !important;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.ani {
+  transition: all 0.3s ease-in-out;
+}
+
+.cardFilter {
+  -webkit-animation: cardFilter 3s linear 0ms 1;
+}
+@-webkit-keyframes cardFilter {
+  0% {
+  }
+  50% {
+    -webkit-filter: brightness(2.5) sepia(0.5);
+  }
+  100% {
+    -webkit-filter: none;
+  }
+}
+.page {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+</style>
+
+<script>
+import wepy from 'wepy';
+import 'wepy-async-function';
+import cf from './config';
+
+export default class extends wepy.app {
+  config = {
+    pages: [
+      'pages/index',
+      'pages/scancode',
+      'pages/login',
+      'pages/address',
+      'pages/addressadd',
+      'pages/system',
+      'pages/user',
+      'pages/reward',
+      'pages/confirmaddress',
+      'pages/success',
+      'pages/cardlist',
+      'pages/systemdetail'
+    ],
+    window: {
+      backgroundColor: '#f1f1f1',
+      backgroundTextStyle: 'light',
+      navigationBarBackgroundColor: '#1B3A68',
+      navigationBarTitleText: '奥特之魂',
+      navigationBarTextStyle: 'white'
+    }
+  };
+
+  globalData = {
+    cardFilterTime: 3000,
+    isLogin: false,
+    login: {},
+    userInfo: null,
+    bgSound: {
+      isPlay: false,
+      manager: null,
+      currentTime: 0
+    }
+  };
+
+  constructor() {
+    super();
+    this.use('requestfix');
+  }
+
+  onLaunch() {
+    this.globalData.bgSound.manager = wx.getBackgroundAudioManager();
+
+    this.globalData.bgSound.manager.onPlay(() => {
+      cf.log('声音播放');
+      this.globalData.bgSound.isPlay = true;
+    });
+    this.globalData.bgSound.manager.onPause(() => {
+      cf.log('声音暂停');
+      this.globalData.bgSound.currentTime = this.globalData.bgSound.manager.currentTime;
+      this.globalData.bgSound.isPlay = false;
+    });
+    this.globalData.bgSound.manager.onStop(() => {
+      cf.log('声音停止');
+      this.globalData.bgSound.currentTime = 0;
+      this.globalData.bgSound.isPlay = false;
+    });
+    this.globalData.bgSound.manager.onEnded(() => {
+      cf.log('声音播放结束');
+      this.globalData.bgSound.currentTime = 0;
+      this.globalData.bgSound.isPlay = false;
+      this.bgSoundPlay();
+    });
+    this.globalData.bgSound.manager.onError(res => {
+      this.globalData.bgSound.currentTime = 0;
+      this.globalData.bgSound.isPlay = false;
+      cf.log('声音错误');
+      cf.log(res);
+    });
+    /*this.globalData.bgSound.manager.onTimeUpdate(() => {
+      cf.log(this.globalData.bgSound.manager.currentTime +'>>>>>'+ this.globalData.bgSound.manager.duration);
+    });*/
+  }
+  onShow() {
+    this.bgSoundPlay();
+  }
+  onHide() {
+    this.globalData.bgSound.manager.stop();
+  }
+  onUnlaunch() {
+    this.globalData.bgSound.manager.stop();
+  }
+  onError(_msg){
+    cf.log('页面报错');
+    cf.log(_msg);
+  }
+  onPageNotFound(){
+    cf.log('页面不存在');
+  }
+  bgSoundPlay() {
+    if (!this.globalData.bgSound.isPlay) {
+      this.globalData.bgSound.isPlay = true;
+      cf.log('声音');
+      cf.log(this.globalData.bgSound);
+      if (this.globalData.bgSound.currentTime == 0) {
+        cf.log('声音---播放');
+        this.globalData.bgSound.manager.title = "奥特之魂"
+        this.globalData.bgSound.manager.src = cf.bgSound;
+        //this.globalData.bgSound.manager.startTime = 270
+      } else {
+        cf.log('声音---续放' + this.globalData.bgSound.manager.paused);
+        this.globalData.bgSound.manager.play();
+      }
+    }
+  }
+}
+</script>
